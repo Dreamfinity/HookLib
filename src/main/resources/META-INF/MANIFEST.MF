@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-FMLCorePlugin: com.integral.hooklibultimate.hooks.PlaceholderHookLoader
+FMLCorePlugin: com.integral.hooklibultimate.hooks.GenericHookLoader
 FMLCorePluginContainsFMLMod: true
 

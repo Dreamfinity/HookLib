@@ -64,6 +64,17 @@ processResources {
 task devJar(type: Jar) {
 	classifier = 'universal-dev'
 	
+	manifest {
+        attributes([
+            "Implementation-Title": "${mod_name}",
+            "Implementation-Version": "${mod_version}",
+            "Implementation-Vendor" :"${mod_author}",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+			"FMLCorePlugin": "${project.group}.hooks.GenericHookLoader",
+			"FMLCorePluginContainsFMLMod": "true"
+        ])
+    }
+	
 	from sourceSets.main.output
 }
 
@@ -82,8 +93,7 @@ jar {
             "Implementation-Version": "${mod_version}",
             "Implementation-Vendor" :"${mod_author}",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            
-			"FMLCorePlugin": "${project.group}.hooks.PlaceholderHookLoader",
+			"FMLCorePlugin": "${project.group}.hooks.GenericHookLoader",
 			"FMLCorePluginContainsFMLMod": "true"
         ])
     }
