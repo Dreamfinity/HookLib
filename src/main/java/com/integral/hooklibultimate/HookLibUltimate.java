@@ -39,7 +39,7 @@ public class HookLibUltimate {
 
 	@Instance(MODID)
 	public static HookLibUltimate instance;
-	public static final Logger log = LogManager.getLogger("ExampleMod");
+	public static final Logger log = LogManager.getLogger("HookLibUltimate");
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
@@ -53,7 +53,7 @@ public class HookLibUltimate {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		packetInstance = NetworkRegistry.INSTANCE.newSimpleChannel("ExampleModChannel");
+		packetInstance = NetworkRegistry.INSTANCE.newSimpleChannel("HookLibUltimateChannel");
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 	}
