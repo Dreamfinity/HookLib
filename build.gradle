@@ -1,0 +1,112 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+	}
+}
+
+repositories {
+	flatDir {
+		dirs 'deps'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'forge'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+version = mod_version
+group = mod_group
+archivesBaseName = mod_archives_name
+
+minecraft {
+	version = "1.7.10-10.13.4.1614-1.7.10"
+	runDir = "eclipse"
+	replace "@VERSION@", project.version
+	replace 'TheSentinel.getInternalSentinelState()', isSentinelActive
+}
+
+dependencies {
+	//compile name: 'somemod-1.7.10'
+}
+
+processResources {
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version,
+		'mod_id': mod_id,
+		'mod_name': mod_name,
+		'mod_author': mod_author,
+		'mod_description': mod_description,
+		'mc_version': mc_version,
+		'mod_version': mod_version,
+		'mod_icon': mod_icon
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+task devJar(type: Jar) {
+	classifier = 'universal-dev'
+	
+	from sourceSets.main.output
+}
+
+jar {
+	doFirst {
+		if (isSentinelActive.toBoolean()) {
+			classifier = 'protected'
+		} else {
+			classifier = 'universal'
+		}
+	}
+	
+	manifest {
+        attributes([
+            "Implementation-Title": "${mod_name}",
+            "Implementation-Version": "${mod_version}",
+            "Implementation-Vendor" :"${mod_author}",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            
+			"FMLCorePlugin": "${project.group}.hooks.PlaceholderHookLoader",
+			"FMLCorePluginContainsFMLMod": "true"
+        ])
+    }
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'universal-dev-sources'
+	from sourceSets.main.allSource
+}
+
+task buildProtected(type: GradleBuild) {
+    tasks = ['build']
+    startParameter.projectProperties = ['isSentinelActive': 'true']
+}
+
+task buildAll() {}
+
+buildAll.dependsOn('build')
+buildAll.finalizedBy('buildProtected')
+
+artifacts {
+	if (buildDeobfVersion.toBoolean() && !isSentinelActive.toBoolean()) {
+		archives devJar
+		archives sourcesJar
+	}
+}

@@ -1,0 +1,14 @@
+.git
+.gradle
+.settings
+bin
+build/c*
+build/d*
+build/r*
+build/s*
+build/t*
+eclipse
+.classpath
+.project
+
+forge*changelog.txt
