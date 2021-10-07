@@ -23,7 +23,7 @@ public class DictionaryGenerator {
     public static Path curDir = Paths.get(".").toAbsolutePath().normalize();
 
     public static void main(String[] args) throws Exception {
-//        List<String> lines = FileUtils.readLines(Paths.get(("/Users/veritaris/Documents/Study/Projects/ArcaneFactoryMods/AnomalyFix/src/main/java/hooklib/helper/methods.csv")).toFile());
+        // List<String> lines = FileUtils.readLines(Paths.get(("/Users/veritaris/Documents/Study/Projects/ArcaneFactoryMods/AnomalyFix/src/main/java/hooklib/helper/methods.csv")).toFile());
         List<String> lines = FileUtils.readLines(new File(String.format("%s/%s", curDir, "/methods.csv")));
         lines.remove(0);
         HashMap<Integer, String> map = new HashMap<Integer, String>();

@@ -1,6 +1,7 @@
 package com.integral.hooklibultimate.minecraft;
 
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import cpw.mods.fml.relauncher.CoreModManager;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
@@ -45,7 +46,7 @@ public class DeobfuscationMetadataReader extends ClassMetadataReader {
     protected MethodReference getMethodReferenceASM(String type, String methodName, String desc) throws IOException {
         FindMethodClassVisitor cv = new FindMethodClassVisitor(methodName, desc);
         byte[] bytes = getTransformedBytes(type);
-        acceptVisitor(bytes, cv);
+        this.acceptVisitor(bytes, cv);
         return cv.found ? new MethodReference(type, cv.targetName, cv.targetDesc) : null;
     }
 
@@ -59,9 +60,8 @@ public class DeobfuscationMetadataReader extends ClassMetadataReader {
     private static byte[] getTransformedBytes(String type) throws IOException {
         String obfName = unmap(type);
         byte[] bytes = Launch.classLoader.getClassBytes(obfName);
-        if (bytes == null) {
+        if (bytes == null)
             throw new RuntimeException("Bytes for " + obfName + " not found");
-        }
         try {
             bytes = (byte[]) runTransformers.invoke(Launch.classLoader, obfName, type, bytes);
         } catch (Exception e) {
@@ -72,9 +72,8 @@ public class DeobfuscationMetadataReader extends ClassMetadataReader {
 
     // возвращает из необфусцированного названия типа обфусцированное
     private static String unmap(String type) {
-        if (HookLibPlugin.getObfuscated()) {
+        if (HookLibPlugin.getObfuscated())
             return FMLDeobfuscatingRemapper.INSTANCE.unmap(type);
-        }
         return type;
     }
 
@@ -82,9 +81,8 @@ public class DeobfuscationMetadataReader extends ClassMetadataReader {
         if (HookLibPlugin.getObfuscated() && MinecraftClassTransformer.instance != null) {
             int methodId = MinecraftClassTransformer.getMethodId(srgName);
             String remappedName = MinecraftClassTransformer.instance.getMethodNames().get(methodId);
-            if (remappedName != null && remappedName.equals(mcpName)) {
+            if (remappedName != null && remappedName.equals(mcpName))
                 return true;
-            }
         }
         return srgName.equals(mcpName);
     }
